@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webcam Recorder</title>
     <style>
         body {
             display: flex;
@@ -36,91 +35,122 @@
 
         button:disabled {
             background-color: #cccccc;
+            color: #666666;
             cursor: not-allowed;
         }
     </style>
+    <title>Webcam Recorder</title>
 </head>
 <body>
+    <h1>Webcam Recorder</h1>
+    <label for="cameraSelector">Select Camera:</label>
+    <select id="cameraSelector"></select>
+    <br>
+    <label for="microphoneSelector">Select Microphone:</label>
+    <select id="microphoneSelector"></select>
+    <br>
+    <video id="webcam" autoplay muted></video>
+    <button id="startRecord">Start Recording</button>
+    <button id="stopRecord">Stop Recording</button>
+    <button id="saveRecord">Save Recording</button>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const webcam = document.getElementById('webcam');
+            const startRecordBtn = document.getElementById('startRecord');
+            const stopRecordBtn = document.getElementById('stopRecord');
+            const saveRecordBtn = document.getElementById('saveRecord');
+            const cameraSelector = document.getElementById('cameraSelector');
+            const microphoneSelector = document.getElementById('microphoneSelector');
 
-<video id="webcam" autoplay></video>
-<label for="cameraSelect">Select Camera:</label>
-<select id="cameraSelect"></select>
-<button id="startBtn" onclick="startRecording()" disabled>Start Recording</button>
-<button id="stopBtn" onclick="stopRecording()" disabled>Stop Recording</button>
+            let mediaRecorder;
+            let chunks = [];
 
-<script>
-    let mediaRecorder;
-    let recordedChunks = [];
-    let currentStream;
+            const updateCameraList = () => {
+                navigator.mediaDevices.enumerateDevices()
+                    .then(devices => {
+                        cameraSelector.innerHTML = '<option value="">Select Camera</option>';
+                        devices.forEach(device => {
+                            if (device.kind === 'videoinput') {
+                                const option = document.createElement('option');
+                                option.value = device.deviceId;
+                                option.text = device.label || `Camera ${cameraSelector.length + 1}`;
+                                cameraSelector.appendChild(option);
+                            }
+                        });
+                    });
+            };
 
-    async function setupCamera() {
-        try {
-            const devices = await navigator.mediaDevices.enumerateDevices();
-            const videoDevices = devices.filter(device => device.kind === 'videoinput');
+            const updateMicrophoneList = () => {
+                navigator.mediaDevices.enumerateDevices()
+                    .then(devices => {
+                        microphoneSelector.innerHTML = '<option value="">Select Microphone</option>';
+                        devices.forEach(device => {
+                            if (device.kind === 'audioinput') {
+                                const option = document.createElement('option');
+                                option.value = device.deviceId;
+                                option.text = device.label || `Microphone ${microphoneSelector.length + 1}`;
+                                microphoneSelector.appendChild(option);
+                            }
+                        });
+                    });
+            };
 
-            if (videoDevices.length === 0) {
-                alert('No video devices found.');
-                return;
-            }
+            updateCameraList();
+            updateMicrophoneList();
 
-            const cameraSelect = document.getElementById('cameraSelect');
-            cameraSelect.innerHTML = '';
-            videoDevices.forEach(device => {
-                const option = document.createElement('option');
-                option.value = device.deviceId;
-                option.text = device.label || `Camera ${cameraSelect.options.length + 1}`;
-                cameraSelect.add(option);
+            const startWebcam = (cameraId, microphoneId) => {
+                navigator.mediaDevices.getUserMedia({
+                    video: { deviceId: cameraId },
+                    audio: { deviceId: microphoneId },
+                })
+                .then((stream) => {
+                    webcam.srcObject = stream;
+                    mediaRecorder = new MediaRecorder(stream);
+
+                    mediaRecorder.ondataavailable = (e) => {
+                        if (e.data.size > 0) {
+                            chunks.push(e.data);
+                        }
+                    };
+                })
+                .catch((err) => console.error('Error accessing webcam:', err));
+            };
+
+            cameraSelector.addEventListener('change', () => {
+                const selectedCameraId = cameraSelector.value;
+                const selectedMicrophoneId = microphoneSelector.value;
+                if (selectedCameraId || selectedMicrophoneId) {
+                    startWebcam(selectedCameraId, selectedMicrophoneId);
+                }
             });
 
-            const constraints = { video: { deviceId: cameraSelect.value } };
-            const stream = await navigator.mediaDevices.getUserMedia(constraints);
-            document.getElementById('webcam').srcObject = stream;
-            currentStream = stream;
-            document.getElementById('startBtn').disabled = false;
-        } catch (error) {
-            console.error('Error accessing webcam:', error);
-        }
-    }
+            microphoneSelector.addEventListener('change', () => {
+                const selectedCameraId = cameraSelector.value;
+                const selectedMicrophoneId = microphoneSelector.value;
+                if (selectedCameraId || selectedMicrophoneId) {
+                    startWebcam(selectedCameraId, selectedMicrophoneId);
+                }
+            });
 
-    function startRecording() {
-        recordedChunks = [];
-        mediaRecorder = new MediaRecorder(currentStream);
+            startRecordBtn.addEventListener('click', () => {
+                chunks = [];
+                mediaRecorder.start();
+            });
 
-        mediaRecorder.ondataavailable = event => {
-            if (event.data.size > 0) {
-                recordedChunks.push(event.data);
-            }
-        };
+            stopRecordBtn.addEventListener('click', () => {
+                mediaRecorder.stop();
+            });
 
-        mediaRecorder.onstop = () => {
-            const blob = new Blob(recordedChunks, { type: 'video/webm' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            document.body.appendChild(a);
-            a.href = url;
-            a.download = 'recording.webm';
-            a.click();
-            URL.revokeObjectURL(url);
-        };
+            saveRecordBtn.addEventListener('click', () => {
+                const blob = new Blob(chunks, { type: 'video/webm' });
+                const videoUrl = URL.createObjectURL(blob);
 
-        mediaRecorder.start();
-        document.getElementById('startBtn').disabled = true;
-        document.getElementById('stopBtn').disabled = false;
-    }
-
-    function stopRecording() {
-        if (mediaRecorder.state === 'recording') {
-            mediaRecorder.stop();
-        }
-        document.getElementById('startBtn').disabled = false;
-        document.getElementById('stopBtn').disabled = true;
-    }
-
-    window.onload = () => {
-        setupCamera();
-        document.getElementById('cameraSelect').addEventListener('change', setupCamera);
-    };
-</script>
-
+                const anchor = document.createElement('a');
+                anchor.href = videoUrl;
+                anchor.download = 'webcamRecording.webm';
+                anchor.click();
+            });
+        });
+    </script>
 </body>
 </html>
