@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Recorder</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        #webcam {
+            width: 100%;
+            max-width: 320px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            margin-bottom: 5px;
+        }
+
+        select, button {
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+<video id="webcam" autoplay></video>
+<label for="cameraSelect">Select Camera:</label>
+<select id="cameraSelect"></select>
+<button id="startBtn" onclick="startRecording()" disabled>Start Recording</button>
+<button id="stopBtn" onclick="stopRecording()" disabled>Stop Recording</button>
+
+<script>
+    let mediaRecorder;
+    let recordedChunks = [];
+    let currentStream;
+
+    async function setupCamera() {
+        try {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const videoDevices = devices.filter(device => device.kind === 'videoinput');
+
+            if (videoDevices.length === 0) {
+                alert('No video devices found.');
+                return;
+            }
+
+            const cameraSelect = document.getElementById('cameraSelect');
+            cameraSelect.innerHTML = '';
+            videoDevices.forEach(device => {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                option.text = device.label || `Camera ${cameraSelect.options.length + 1}`;
+                cameraSelect.add(option);
+            });
+
+            const constraints = { video: { deviceId: cameraSelect.value } };
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
+            document.getElementById('webcam').srcObject = stream;
+            currentStream = stream;
+            document.getElementById('startBtn').disabled = false;
+        } catch (error) {
+            console.error('Error accessing webcam:', error);
+        }
+    }
+
+    function startRecording() {
+        recordedChunks = [];
+        mediaRecorder = new MediaRecorder(currentStream);
+
+        mediaRecorder.ondataavailable = event => {
+            if (event.data.size > 0) {
+                recordedChunks.push(event.data);
+            }
+        };
+
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            document.body.appendChild(a);
+            a.href = url;
+            a.download = 'recording.webm';
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        mediaRecorder.start();
+        document.getElementById('startBtn').disabled = true;
+        document.getElementById('stopBtn').disabled = false;
+    }
+
+    function stopRecording() {
+        if (mediaRecorder.state === 'recording') {
+            mediaRecorder.stop();
+        }
+        document.getElementById('startBtn').disabled = false;
+        document.getElementById('stopBtn').disabled = true;
+    }
+
+    window.onload = () => {
+        setupCamera();
+        document.getElementById('cameraSelect').addEventListener('change', setupCamera);
+    };
+</script>
+
+</body>
+</html>
