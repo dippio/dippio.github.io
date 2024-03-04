@@ -1,7 +1,23 @@
+// nuh uh no js here
+// dogshit fuckass language
+//
+//
+//
+//
+// i lied
+fetch('./posts.json')
+        .then(response => response.json())
+        .then(data => {
+            const postsTableBody = document.querySelector('#posts tbody');
 
-// i dont really do js, so this is broken as hell
-function themeToggle() {
-    let currentTheme = "dark";
-    var element = document.body;
-    element.classList.toggle("dark-mode");
-    }
+            data.forEach(post => {
+                const row = postsTableBody.insertRow();
+                const dateCell = row.insertCell(0);
+                const titleCell = row.insertCell(1);
+                dateCell.textContent = post.date;
+                titleCell.innerHTML = `<a href="${post.linksto}">${post.title}</a>`;
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching posts data: ', error);
+        });
