@@ -25,19 +25,15 @@ fetch('./posts.json')
         const row = postsTableBody.insertRow();
         const dateCell = row.insertCell(0);
         const titleCell = row.insertCell(1);
-
-        // Calculate the number of hyphens needed to extend to the edges of the viewport
-        const titleLength = post.title.length;
-        const viewportWidth = window.innerWidth;
-        const hyphenCount = Math.max(viewportWidth - titleLength - 10, 0); // Adjust as needed
-
-        // Create a string of hyphens with the calculated count
-        const hyphens = '-'.repeat(hyphenCount);
-
-        // Concatenate title, hyphens, and date
-        const hyphenatedTitle = `${post.title} ${hyphens} ${post.date}`;
+        
+        // Add hyphens between date and title
+        const hyphenatedTitle = `${post.title} ----------------- ${post.date}`;
         dateCell.textContent = "";
         titleCell.innerHTML = `<a href="${post.linksto}">${hyphenatedTitle}</a>`;
+        
+        // Align date to the right and title to the left
+        dateCell.style.textAlign = "right";
+        titleCell.style.textAlign = "left";
     });
 })
 .catch(error => {
