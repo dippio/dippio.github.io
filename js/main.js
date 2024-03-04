@@ -26,14 +26,16 @@ fetch('./posts.json')
         const dateCell = row.insertCell(0);
         const titleCell = row.insertCell(1);
         
-        // Add hyphens between date and title
-        const hyphenatedTitle = `${post.title} ----------------- ${post.date}`;
-        dateCell.textContent = "";
-        titleCell.innerHTML = `<a href="${post.linksto}">${hyphenatedTitle}</a>`;
+        // text alignment
+        dateCell.textContent = post.date;
+        dateCell.style.textAlign = "left";
+        titleCell.style.textAlign = "right";
         
-        // Align date to the right and title to the left
-        dateCell.style.textAlign = "right";
-        titleCell.style.textAlign = "left";
+        // Set title text and make it clickable with link
+        const titleLink = document.createElement('a');
+        titleLink.href = post.linksto;
+        titleLink.textContent = post.title;
+        titleCell.appendChild(titleLink);
     });
 })
 .catch(error => {
