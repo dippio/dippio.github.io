@@ -26,16 +26,15 @@ fetch('./posts.json')
         const dateCell = row.insertCell(0);
         const titleCell = row.insertCell(1);
         
-        // text alignment
         dateCell.textContent = post.date;
         dateCell.style.textAlign = "left";
-        titleCell.style.textAlign = "right";
         
         // Set title text and make it clickable with link
         const titleLink = document.createElement('a');
         titleLink.href = post.linksto;
         titleLink.textContent = post.title;
         titleCell.appendChild(titleLink);
+        titleCell.style.textAlign = "right";
     });
 })
 .catch(error => {
