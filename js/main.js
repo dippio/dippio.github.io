@@ -4,7 +4,7 @@
 
 // i lied
 // chatgpt my goat
-fetch('./posts.json')
+fetch('../posts.json')
 .then(response => response.json())
 .then(data => {
     const postsTableBody = document.querySelector('#posts tbody');
