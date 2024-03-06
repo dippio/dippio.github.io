@@ -1,5 +1,5 @@
 body {
-    width: 650px;
+    width: 35%;
     position: relative;
     margin-left: auto;
     margin-right: auto;
@@ -10,6 +10,33 @@ body {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
     font-feature-settings: normal;
     overflow-y: scroll;
+    
+}
+
+a:link {
+  color: rgb(248, 220, 234);
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:visited {
+  color: rgb(255, 240, 242);
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:hover {
+  color: rgb(245, 180, 201);
+  background-color: transparent;
+}
+
+a:active {
+  color: rgb(235, 141, 171);
+  background-color: transparent;
+}
+
+.headbox > h3 {
+  padding-top: 2%;
 }
 
 .contentbox > h4 {
@@ -28,4 +55,38 @@ body {
 
 #posts {
   width: 100%;
+}
+
+/* 
+i kinda dont think this works ngl
+#posts tbody tr td:first-child::after {
+  content: ' • ';
+  display: inline-block;
+  margin: 0 5px;
+}
+#posts tbody tr td:last-child::before {
+  content: ' • ';
+  display: inline-block;
+  margin: 0 5px;
+} 
+*/
+
+.postImage > img {
+  border-radius: 5px;
+  width: 50%;
+}
+
+.postImageRight {
+  text-align: right;
+}
+
+.postImageRight > img {
+  border-radius: 5px;
+  width: 50%;
+}
+
+
+.teenyTinyText {
+  font-style: italic;
+  font-size: 70%;
 }

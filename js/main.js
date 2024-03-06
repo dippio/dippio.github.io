@@ -1,9 +1,7 @@
 // nuh uh no js here
 // dogshit fuckass language
-//
-//
-//
-//
+
+
 // i lied
 // chatgpt my goat
 fetch('./posts.json')
@@ -39,4 +37,25 @@ fetch('./posts.json')
 })
 .catch(error => {
     console.error('Error fetching posts data: ', error);
+});
+
+
+
+
+
+// get screen aspect ratio
+document.addEventListener("DOMContentLoaded", function() {
+    
+    var windowHeight = window.innerHeight;
+    var windowWidth = window.innerWidth;
+    
+    var aspectRatio = windowWidth / windowHeight;
+
+    if (aspectRatio > 1.4) {
+        document.body.style.width = "30%";
+    } else if (aspectRatio >= 1 && aspectRatio <= 1.4) {
+        document.body.style.width = "40%";
+    } else {
+        document.body.style.width = "85%";
+    }
 });
