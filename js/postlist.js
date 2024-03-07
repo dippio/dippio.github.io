@@ -10,7 +10,7 @@ fetch('../posts.json')
         return dateB - dateA;
     });
 
-    recentPosts.forEach(post => {
+    data.forEach(post => {
         const row = postsTableBody.insertRow();
         const dateCell = row.insertCell(0);
         const titleCell = row.insertCell(1);
