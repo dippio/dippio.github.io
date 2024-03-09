@@ -1,0 +1,113 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tyler batkin // blog post </title>
+    <link type="text/css" rel="stylesheet" href="../css/style.css" />
+    <script src="../js/main.js"></script> 
+</head>
+<body>
+    <div class="headbox">
+        <h3 align="center"> tyler batkin </h2>
+        <p align="center"> <i> hacker by day, sleeper by night </i> </p>
+    </div>
+
+
+    
+    <div class="contentbox">
+        <h4> hacking my telstra router(s)  </h4>
+        <p> if you are with telstra, you know how shit their routers are.</p>
+        <p> much to my dismay, i am still with them (ideally i'll have switched isps in the coming weeks but thats besides the point) </p>
+        <p> their routers are incredibly locked down, so i modded them to add some functions </p>
+    </div>
+    
+
+
+    <div class="contentbox">
+        <h4> f@st 5355 </h4>
+        <p> this was the first router that was "gifted" to me by telstra </p>
+        <p> it is a shit router, everything is so locked down, to the point where you can't even change the routers default DNS server </p>
+        <p> i think this is solely just for blocking piracy sites at the DNS level. </p>
+        <div class="teenyTinyText">
+            <p> which is a really stupid way to go about that, but it makes it easy enough to bypass so i can't complain lol </p>
+        </div>
+        <p> but this is a huge issue, because the DNS servers telstra uses suck ass and go down constantly</p>
+        <p> literally 90% of the time i cant connect to the internet, ill check the error logs and it'll just be the dns server not propegating shit properly </p>
+        <p> luckily enough, this is an easy issue to fix since you can just run shell commands(?) from the browser console</p>
+        <p> yep, thats right, from the browser console, you can just enable ssh access lmao</p>
+        <p> and from there, sshing into the router and configuring things solves a lot of the issues i have with the router</p>
+    </div>
+
+    <div class="contentbox">
+        <h4> telstra smart modem (gen 2)  </h4>
+        <p> my second foray with a telstra router, this time bought with my hard earned money.</p>
+        <div class="teenyTinyText">
+            <p> (it was 10 australian dollars, which is equivalent to like 2 usd i think) </p>
+        </div>
+        <p> unfortunately for me, they upped the security on this router (thank god i guess? the other one was horrifically insecure)</p>
+        <p> i don't even remember why i wanted to mod this one, since i think it lets you use googles DNS servers, which probably would have sufficed.  </p>
+        <p> i don't think i've even used any mods besides cpu and ram monitors since i install custom firmware lmao</p>
+        <p> regardless, it took me a long while to actually get it modded </p>
+        <div class="postImage">
+            <img src="../img/router.webp" alt="telstra smart modem 2">
+            <div class="teenyTinyText">
+                <p> i wanted to hit this fuckass router with a hammer so bad</p>
+            </div>
+        </div>
+        <p> given you're reading an article about something like modding routers, i'm assuming you actually do wanna hear the nitty gritty details </p>
+        <p> but i'm lazy and don't wanna write like 4 paragraphs about technical shit </p>
+        <p> so let's just pretend i'm leaving out the details for your sake, oki? :3</p>
+        <p> first attempt involved attempting to upload some modded firmware directly to the firmware banks and praying it would upload to the active bank, since only one of them can be written to externally </p>
+        <p> unfortunately, the router auto updated a few days prior, and switched which firmware bank it was using in the process, so my upload wrote to the non active bank</p>
+        <p> the only way to get around this is by forcing a bank switch by tricking the router into thinking the active firmware bank is unbootable </p>
+        <p> and at the time, there were no guides on how to do it on the smart modem by just power cycling it</p>
+        <p> so my last option was to take it apart and try to wire up cables to the serial pins </p>
+        <p> but after like 3 hours of taking it apart and inspecting the boards, i couldn't find them at all </p>
+        <p> and given the lack of proper documentation of the gen 2 online at the time, i just assumed continuing to search was a lost cause </p>
+        <div class="teenyTinyText">
+            <p> (even now after like a whole year and getting a better understanding of the gen 2, i still don't even know if it has serial pins on the board lol)</p>
+        </div>
+        <p> so my last last option was basically to undervolt the shit out of it using a potentiometer</p>
+        <p> but that required me to do actual electrical work, which i didn't feel comfortable doing at the time, especially since i'd be risking shocking myself with 240 volts if i fucked up</p>
+        <p> so my last last last option was to wait</p>
+        <p> so i waited a whole year, praying that a new firmware version would be released so it would upgrade and switch to the writable bank</p>
+        <p> checking every day to see if new firmware was out</p>
+        <p> and eventually... </p>
+        <p> nothing lol, i think an update has been released since i modded the router, but i cant say for certain since i refuse to update  </p>
+        <p> i'm just very lucky some kind soul uploaded a video of how to switch banks by power cycling lol </p>
+        <p> definitely not a fun or cool ending to my 11 months of misery, but it worked in the end, so i can't complain </p>
+    </div>
+
+    <div class="contentbox">
+        <h4> conclusions  </h4>
+        <p> don't choose telstra as your isp </p>
+        <p> joking aside, maybe one day i'll make a post that documents how to actually mod the routers in detail, but theres people who can (and have) done it better than i ever could, so i'll wait until i'm more experienced and have a better understanding of the routers </p>
+        <p> something something don't follow any instructions i gave on this page, something something telstra please don't sue, something something the end </p>
+    </div>
+
+    <br>
+
+    <div class="postMeta">
+        <p> first posted on 10 / 03 / 24 &nbsp;&nbsp;&nbsp;&nbsp; updated on 10 / 03 / 24 </p>
+    </div>
+
+
+    <div class="footer">
+        <hr>
+        <i> tyler batkin  2024</i> <br>
+        <div class="teenyTinyText">
+            <a href="../index"> home </a>
+            <a href="postListing"> posts </a>
+        </div>
+    </div>
+    
+
+    <!--
+    site by tyler (github.com/dippi0)
+    all code copyable, do what you want lol
+
+    p.s. it's rude to snoop around peoples stuff, you know?
+    -->
+
+</body>
+</html>

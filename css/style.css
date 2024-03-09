@@ -90,3 +90,11 @@ i kinda dont think this works ngl
   font-style: italic;
   font-size: 70%;
 }
+
+.postMeta {
+  font-style: italic;
+  font-size: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
