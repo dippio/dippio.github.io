@@ -1,0 +1,226 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tyler batkin // blog post </title>
+    <link type="text/css" rel="stylesheet" href="../css/style.css" />
+    <script src="../js/main.js"></script> 
+</head>
+<body>
+    <div class="headbox">
+        <h3 align="center"> tyler batkin </h2>
+        <p align="center" id="flavorText"> <i> sample text </i> </p>
+    </div>
+
+
+    
+    <div class="contentbox">
+        <h4> bad gentoo installation guide  </h4>
+        <p> given how much i install gentoo, you'd think id remember how to do it off the top of my head. </p>
+        <p> unfortunately, i must have amnesia or something, because every time, i forget what to do past extracting the stage3 </p>
+        <p> so heres a little guide thats hopefully helpful to both me and you. </p>
+        <div class="teenyTinyText">
+            <p> something something im not responcible for data loss if you follow this guide, etc, etc. </p>
+        </div>
+    </div>
+    
+
+
+    <div class="contentbox">
+        <h4> disk partitioning </h4>
+        <p> first step (besides downloading and flashing the iso, of course), is to partition the disks.  </p>
+        <p> if you've installed a distro like arch before, this is a step you're likely familar with, so i won't go too into depth. </p>
+        <h4> UEFI </h4>
+        <p> on a UEFI system (which is most systems made after 2012), you're gonna want 3 main partitions.  </p>
+        <p> a boot partition (512mb - 1gb, formatted with fat32) </p>
+        <p> a swap partition (the amount of ram in your PC multiplied by 2) </p>
+        <p> and a primary partition (usually the rest of the space on your drive, formatted ext4.) </p>
+        <p> you can also have a seperate home partition, but i'm not gonna go into that since i normally just have the home folder on the primary partition </p>
+        <p> -   partition the disks (if you need a tutorial for gentoo i'd suggest just using cfdisk since it's easy) </p>
+        <div class="codeBlock"> 
+            <p>mkfs.fat -F 32 /dev/sda1 </p>
+            <p>mkswap /dev/sda2</p>
+            <p>mkfs.ext4 /dev/sda3 </p>
+            <p>mkdir /mnt/gentoo </p>
+            <p>mount /dev/sda3 /mnt/gentoo</p>
+            <p>mkdir /mnt/gentoo/boot/efi </p>
+            <p>mount /dev/sda1 /mnt/gentoo/boot/efi</p>
+            <p>swapon /dev/sda2</p>
+        </div>
+        <p> then run lsblk to check everythings mounted correctly </p>
+        <h4> MBR / BIOS </h4>
+        <p> on a MBR / legacy BIOS system, you're gonna want 3 partitions.  </p>
+        <p> a boot partition (512mb - 1gb, formatted with xfs) </p>
+        <div class="teenyTinyText">
+            <p> i think you can technically use fat32 but i've had nothing but hell trying to get that to work on my thinkpad lol </p>
+            <p> should also be noted that im pretty sure you only actually need 1mb for the boot partition, i'm just too used to doing uefi installs </p>
+        </div>
+        <p> a swap partition (the amount of ram in your PC multiplied by 2) </p>
+        <p> and a primary partition (usually the rest of the space on your drive, formatted ext4.) </p>
+        <p> -   partition the disks (if you need a tutorial for gentoo i'd suggest just using cfdisk since it's easy) </p>
+        <p> -   if you're dualbooting with windows or something, you're gonna need to partition the gentoo stuff to be under an extended partition. </p>
+        <p> -   make sure that the boot partition is marked as bootable!!! grub will be a pain later if you forget, so double check now  </p>
+        <div class="codeBlock"> 
+            <p>mkfs.xfs /dev/sda1 </p>
+            <p>mkswap /dev/sda2</p>
+            <p>mkfs.ext4 /dev/sda3 </p>
+            <p>mkdir /mnt/gentoo </p>
+            <p>mount /dev/sda3 /mnt/gentoo</p>
+            <p>mkdir /mnt/gentoo/boot </p>
+            <p>mount /dev/sda1 /mnt/gentoo/boot</p>
+            <p>swapon /dev/sda2</p>
+        </div>
+        <p> then run lsblk to check everythings mounted correctly </p>
+        <h4> partitioning tl:dr </h4>
+        <p> -   if you have a <b>UEFI</b> based system, you're likely gonna wanna partition it something like: <br>  <br> 512mb fat32 boot <br>  ram * 2 swap <br>  and the rest of the storage for an ext4 primary partition. <br>  </p>
+        <p> -   i'd suggest a 512mb or higher boot partiton, but i've gotten away with 100mb before so eehhhh do what you want </p>
+        <p> -   realistically you can get away with very little or no swap, ram * 2 is just a good rule of thumb </p>
+        <p> -   if you have a <b>MBR / BIOS</b> based system, you're likely gonna wanna partition it something like: <br>  <br> 512mb xfs boot <br>  ram * 2 swap <br>  and the rest of the storage for an ext4 primary partition. <br>  </p>
+        <p> -   if you're dualbooting on an mbr bios system, you're probably gonna need to have gentoo running under an extended partition </p>
+    </div>
+
+    <div class="contentbox">
+        <h4> stage3 installation / pre chroot config  </h4>
+        <p> next stage is to go to the gentoo website and grab the stage3 download url.</p>
+        <p> theres a lot of options, just choose the open-rc stage3 </p>
+        <div class="teenyTinyText">
+            <p> if you wanna save time you can also choose the desktop profile </p>
+        </div>
+        <p> then change the current directory to the /mnt/gentoo folder, and download the stage3 </p>
+        <div class="codeBlock">
+            <p>cd /mnt/gentoo </p>
+            <p>wget https://(stage3 url).tar.xz</p>
+        </div>
+        <p> then extract it </p>
+        <div class="codeBlock">
+            <p> tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner</p>
+        </div>
+        <p> the next step is to edit portages config file.</p>
+        <p> the number of makejobs should be the amount of installed ram / 2, or the amount of threads your pc has, whichever is lowest.</p>
+        <p> the gentoo mirrors flag sould be set to the nearest mirror to you, you can find that on their website aswell. </p>
+        <div class="codeBlock">
+            <p> vim /mnt/gentoo/etc/portage/make.conf </p>
+            <p> MAKEOPTS="-j8" (16gb of ram, 8 threads)</p>
+            <p> GENTOO_MIRRORS="https://(nearest mirror)" </p>
+        </div>
+        <p> next step is to copy the current live enviornments DNS info over to the gentoo system (assuming you're not just connected over ethernet) </p>
+        <div class="codeBlock">
+            <p> cp --dereference /etc/resolv.conf /mnt/gentoo/etc/ </p>
+        </div>
+        <p> then theres this stuff </p>
+        <div class="codeBlock">
+            <p>mount --types proc /proc /mnt/gentoo/proc</p>
+            <p>mount --rbind /sys /mnt/gentoo/sys</p>
+            <p>mount --make-rslave /mnt/gentoo/sys</p>
+            <p>mount --rbind /dev /mnt/gentoo/dev</p>
+            <p>mount --make-rslave /mnt/gentoo/dev</p>
+            <p>mount --bind /run /mnt/gentoo/run</p>
+            <p>mount --make-slave /mnt/gentoo/run</p>
+            <p>test -L /dev/shm && rm /dev/shm && mkdir /dev/shm</p>
+            <p>mount --types tmpfs --options nosuid,nodev,noexec shm /dev/shm</p>
+            <p>chmod 1777 /dev/shm /run/shm</p>     
+        </div>
+        <p> i'm not even gonna pretend to know what this does, i think its mounting the nessasary file systems to chroot successfully? (theres also some stuff for properly mounting on non gentoo install media) </p>
+        <p> it's a lot of stuff so i always just copy and paste lol </p>
+        <p> now actually chroot into the system </p>
+        <div class="codeBlock">
+            <p>chroot /mnt/gentoo /bin/bash</p>
+            <p>source /etc/profile</p>
+            <p>export PS1="(chroot) ${PS1}"</p>
+        </div>
+    </div>
+
+    <div class="contentbox">
+        <h4> post chroot config  </h4>
+        <p> this is where the fun stuff begins </p>
+        <p> and by fun stuff, i mean waiting for stuff to compile </p>
+        <p> :3 </p>
+        <p> sync to make portage up to date </p>
+        <div class="codeBlock">
+            <p>emerge-webrsync</p>
+        </div>
+        <p> you can also do a full sync but this takes forever, i wouldn't suggest this unless you have a specific reason to do so, like something being broken </p>
+        <div class="teenyTinyText">
+            <p> (which tbf is a weekly occurence)</p>
+        </div>
+        <div class="codeBlock">
+            <p>emerge --sync</p>
+        </div>
+        <h4> profile configuration  </h4>
+        <p> this is where portage sets the default USE flags. </p>
+        <p> you can view the currently selected profile by running </p>
+        <div class="codeBlock">
+            <p>eselect profile list</p>
+        </div>
+        <p> theres a very high chance it's set to profile 1 (unless you used the desktop stage3, in which case, it will probably be set to profile 5) </p>
+        <p> if you want to change the profile you are using, you can just run </p>
+        <div class="codeBlock">
+            <p>eselect profile set (profile number)</p>
+        </div>
+        <p> however i wouldn't suggest doing this unless you are setting it to one of the desktop enviornments like KDE or GNOME or you know what you're doing (musl so very scary)</p>
+        <h4> licenses  </h4>
+        <p> in the make.conf file, you can set what package lisences you would like gentoo to accept </p>
+        <p> if you're lazy / don't really care like me, you can use </p>
+        <div class="codeBlock">
+            <p> ACCEPT_LICENSE="*" </p>
+        </div>
+        <p> you can also allow or disallow specific liscenses by going like</p>
+        <div class="codeBlock">
+            <p> ACCEPT_LICENSE="@FSF-APPROVED -@EULA" </p>
+        </div>
+        <div class="teenyTinyText">
+            <p> this accepts fsf approved free software, blocks packages with EULAs </p>
+        </div>
+    </div>
+
+    <div class="contentbox">
+        <h4> the fun part (@world)  </h4>
+        <p> once everything is configured properly, this is the point at which you update the @world set </p>
+        <div class="teenyTinyText">
+            <p> aka compiling everything </p>
+        </div>
+        <p> depending on your setup and how you configured everything, this could take upwards of 18 hours (my longest time) </p>
+        <p> if you think you are ready, run </p>
+        <div class="codeBlock">
+            <p> emerge -avUDN @world </p>
+        </div>
+        <div class="teenyTinyText">
+            <p> learning how portage works is a pretty important step, so i'll go over it in more detail here. this is just a shortened form of "emerge --ask --verbose --update --deep --newuse @world". </p>
+            <p> you can probably guess what some of it does, but basically:</p>
+            <p> --ask:   asks the user for confirmation before starting, gives time to read over what packages are gonna be merged, updated, etc </p>
+            <p> --verbose:   pretty obvious, just outputs more info to the terminal when compiling</p>
+            <p> --update:   also pretty obvious, updates packages</p>
+            <p> --deep:   makes sure all dependancies are also updated</p>
+            <p> --newuse:   checks for new useflags in a packages ebuild, and recompiles (this is kinda unnessasary and i'd only suggest it for the innitial build, i normally use changed-use)</p>
+            <p> --@world:   package set that comprises every package installed on the system</p>
+        </div>
+        <p> once you start the compiling, assuming nothing went wrong, congratulations on your new space heater! </p>
+        <p> unless you are doing a barebones install, this <i>will</i> take a while, so maybe go to sleep while you wait. </p>
+    </div>
+
+
+    <br>
+
+    <div class="postMeta">
+        <p id="postDate">First posted on 26 / 04 / 24 &nbsp;&nbsp;&nbsp;&nbsp; Updated on <span id="modificationDate"></span></p>
+    </div>
+
+    <div class="footer">
+        <hr>
+        <i> tyler batkin  2024</i> <br>
+        <div class="teenyTinyText">
+            <a href="../index"> home </a>
+            <a href="postListing"> posts </a>
+        </div>
+    </div>
+    
+
+    <!--
+    site by tyler (github.com/dippi0)
+    all code copyable, do what you want lol
+
+    p.s. it's rude to snoop around peoples stuff, you know?
+    -->
+
+</body>
+</html>

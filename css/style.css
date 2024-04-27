@@ -1,13 +1,13 @@
 body {
-    width: 35%;
+    width: 25%;
     position: relative;
     margin-left: auto;
     margin-right: auto;
-    background: #272233;
-    color: #FAF0E6;
+    background: #352f42;
+    color: #e3e7f1;
     line-height: 1.5;
     tab-size: 5; 
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     font-feature-settings: normal;
     overflow-y: scroll;
     
@@ -57,19 +57,9 @@ a:active {
   width: 100%;
 }
 
-/* 
-i kinda dont think this works ngl
-#posts tbody tr td:first-child::after {
-  content: ' • ';
-  display: inline-block;
-  margin: 0 5px;
+#pinnedposts {
+  width: 100%;
 }
-#posts tbody tr td:last-child::before {
-  content: ' • ';
-  display: inline-block;
-  margin: 0 5px;
-} 
-*/
 
 .postImage > img {
   border-radius: 5px;
@@ -97,4 +87,10 @@ i kinda dont think this works ngl
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+}
+
+.codeBlock {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  color: #FAF0E6;
+  background: #181424;
 }

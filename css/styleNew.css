@@ -1,0 +1,75 @@
+body {
+  background: #2b2635;
+  color: #e3e7f1;
+  line-height: 1;
+  tab-size: 5; 
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-feature-settings: normal;
+  overflow-y: scroll;
+}
+
+h1 {
+  font-size: 1.5vw;
+}
+
+h4 {
+  text-decoration: underline;
+}
+
+.mainContentBox {
+  background: #393346;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 23vw;
+  height: 65vh;
+  border: 2px solid rgb(235, 141, 171);
+  overflow-y: scroll;
+}
+
+
+a:link {
+  color: rgb(248, 220, 234);
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:visited {
+  color: rgb(255, 240, 242);
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:hover {
+  color: rgb(245, 180, 201);
+  background-color: transparent;
+}
+
+a:active {
+  color: rgb(235, 141, 171);
+  background-color: transparent;
+}
+
+hr {
+  border: none;
+  height: 2px;
+  background-color: rgb(235, 141, 171);
+  color: rgb(235, 141, 171);
+}
+
+#posts {
+  width: 100%;
+}
+
+#pinnedposts {
+  width: 100%;
+}
+
+.postMeta {
+  font-style: italic;
+  font-size: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}

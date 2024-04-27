@@ -1,12 +1,17 @@
 [
     {
-        "date": "06 / 03 / 24",
-        "title": "post template",
-        "linksto": "/posts/postTemplate"
+        "date": "16 / 04 / 24",
+        "title": "more about me",
+        "linksto": "/posts/about.html"
     },
     {
         "date": "10 / 03 / 24",
         "title": "router modding",
         "linksto": "/posts/routerMods"
+    },
+    {
+        "date": "06 / 03 / 24",
+        "title": "post template",
+        "linksto": "/posts/postTemplate"
     }
 ]
