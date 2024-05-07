@@ -7,11 +7,11 @@ document.addEventListener("DOMContentLoaded", function() {
     var aspectRatio = windowWidth / windowHeight;
 
     if (aspectRatio > 1.4) {
-        document.body.style.width = "30%";
+        mainContentBox.style.width = "23vw";
     } else if (aspectRatio >= 1 && aspectRatio <= 1.4) {
-        document.body.style.width = "40%";
+        mainContentBox.style.width = "40vw";
     } else {
-        document.body.style.width = "85%";
+        mainContentBox.style.width = "85vw";
     }
 });
 
