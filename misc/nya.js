@@ -197,8 +197,6 @@ function idleAnimate() {
   nekoSprite.src = idle;                              // injects an aditional frame, not sure why i added this in the first place
   let randInt = Math.floor((Math.random()) * 3);      // i know there was a reason though and now i'm too scared to remove it
 
-  console.log(randInt)
-
   let animationFrames;
   let maxFrames;
   let snoreIntervalId;
