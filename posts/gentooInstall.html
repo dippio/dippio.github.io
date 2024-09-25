@@ -84,7 +84,7 @@
         <p> next stage is to go to the gentoo website and grab the stage3 download url.</p>
         <p> theres a lot of options, just choose the open-rc stage3 </p>
         <div class="teenyTinyText">
-            <p> if you wanna save time you can also choose the desktop profile </p>
+            <p> if you wanna use gentoo with a desktop enviornment and want to save time later down the line, you can also choose the desktop profile </p>
         </div>
         <p> then change the current directory to the /mnt/gentoo folder, and download the stage3 </p>
         <div class="codeBlock">
@@ -152,12 +152,12 @@
         <div class="codeBlock">
             <p>eselect profile list</p>
         </div>
-        <p> theres a very high chance it's set to profile 1 (unless you used the desktop stage3, in which case, it will probably be set to profile 5) </p>
+        <p> theres a very high chance it's set to profile 1 (unless you used the desktop stage3, in which case, it will probably be something else) </p>
         <p> if you want to change the profile you are using, you can just run </p>
         <div class="codeBlock">
             <p>eselect profile set (profile number)</p>
         </div>
-        <p> however i wouldn't suggest doing this unless you are setting it to one of the desktop enviornments like KDE or GNOME or you know what you're doing (musl so very scary)</p>
+        <p> however i wouldn't suggest doing this unless you are setting it to one of the desktop enviornments like KDE or GNOME or you know what you're doing</p>
         <h4> licenses  </h4>
         <p> in the make.conf file, you can set what package lisences you would like gentoo to accept </p>
         <p> if you're lazy / don't really care like me, you can use </p>
@@ -179,7 +179,7 @@
         <div class="teenyTinyText">
             <p> aka compiling everything </p>
         </div>
-        <p> depending on your setup and how you configured everything, this could take upwards of 18 hours (my longest time) </p>
+        <p> depending on your setup and how you configured everything, this could take upwards of 1.5 days (my longest time) </p>
         <p> if you think you are ready, run </p>
         <div class="codeBlock">
             <p> emerge -avUDN @world </p>
@@ -193,11 +193,123 @@
             <p> --deep:   makes sure all dependancies are also updated</p>
             <p> --newuse:   checks for new useflags in a packages ebuild, and recompiles (this is kinda unnessasary and i'd only suggest it for the innitial build, i normally use changed-use)</p>
             <p> --@world:   package set that comprises every package installed on the system</p>
+            <p> if your device is pretty good, i'd also suggest appending --jobs=3 to the end, just to speed things up. it'll block any output though so it'll be harder to tell how far along into each package you are</p>
         </div>
         <p> once you start the compiling, assuming nothing went wrong, congratulations on your new space heater! </p>
         <p> unless you are doing a barebones install, this <i>will</i> take a while, so maybe go to sleep while you wait. </p>
     </div>
 
+    <div class="contentbox">
+        <h4> the less fun part (sys configuration)  </h4>
+        <p> unfortunately, this is the less fun part :( </p>
+        <div class="teenyTinyText">
+            <p> arguably </p>
+        </div>
+        <p> first, youll need to set up your time zone info </p>
+        <p> these can be found in /usr/share/zoneinfo/(CONTINENT)/(CITY)</p>
+        <p> once you've found your relevant timezone, write it to /etc/timezone. </p>
+        <div class="codeBlock">
+            <p> echo "Europe/Brussels" > /etc/timezone </p>
+        </div>
+        <p> then regenerate the timezone package </p>
+        <div class="codeBlock">
+            emerge --config sys-libs/timezone-data
+        </div>
+        <p> edit /etc/locale.gen and uncomment the UTF-8 locale you use, then run locale-gen.</p>
+        <p> run eselect locale list to show the avalible locales, and select the one you just generated with eselect locale set (locale number, but itll probably be 4)</p>
+        <p> refresh your enviornment </p>
+        <div class="codeBlock">
+            env-update && source /etc/profile && export PS1="(chroot) ${PS1}"
+        </div>
+    </div>
+
+    <div class="contentbox">
+        <h4> fstab (scary!)  </h4>
+        <p> i've never learned how to properly manually configure an fstab, as stupid as it sounds. </p>
+        <p> if you are using a different distros livecd to boot gentoo, just create a new terminal window and use genfstab.</p>
+        <div class="codeBlock">
+            git clone https://github.com/glacion/genfstab
+            cd genfstab
+            chmod +x genfstab
+            ./genfstab /mnt/gentoo/ > /mnt/gentoo/etc/fstab
+        </div>
+        <p> if theres a tracefs line in the generated fstab, just remove it </p>
+    </div>
+
+    <div class="contentbox">
+        <h4> kernel stuff  </h4>
+        <p> writing about kernel configuration would take forever, so for the sake of this post ill just use a distro kernel. </p>
+        <p> you should definitely take the time to learn how to use genkernel or something in the future though </p>
+        <p> firstly, download some firmware blobs </p>
+        <div class="codeBlock">
+            emerge --ask sys-kernel/linux-firmware
+        </div>
+        <p> then set dracut as a use flag for the kernel installer, to help with making a initramfs </p>
+        <div class="codeBlock">
+            echo "sys-kernel/installkernel dracut" > /etc/portage/package.use/installkernel
+        </div>
+        <p> then actually download the binary kernel and stuff </p>
+        <div class="codeBlock">
+            emerge --ask sys-kernel/installkernel
+            emerge --ask sys-kernel/gentoo-kernel-bin
+        </div>
+    </div>
+
+    <div class="contentbox">
+        <h4> more sysconfig  </h4>
+        <p> set the system hostname by writing it to /etc/hostname </p>
+        <div class="codeBlock">
+            echo gentowo > /etc/hostname
+        </div>
+        <p> now, install some useful packages (logging daemons, networking, etc)</p>
+        <div class="codeBlock">
+            emerge --ask net-misc/dhcpcd app-admin/sysklogd net-misc/chrony --jobs-=3
+        </div>
+        <p> if your device is able to use multiple portage jobs, id definitely suggest it </p>
+        <p> add all of the installed programs to the boot runlevels </p>
+        <div class="codeBlock">
+            rc-update add dhcpcd default <br>
+            rc-update add sysklogd default <br>
+            rc-update add chronyd default <br>
+        </div>
+        <p> now edit the hosts file, and append your hostname to the localhost lines </p>
+        <div class="codeBlock">
+            nano -w /etc/hosts <br>
+            localhost   127.0.0.1   gentowo <br>
+            localhost   ::1         gentowo <br>
+        </div>
+        <p> set the root password with passwd </p>
+        <p> now, you should emerge a few final packages that are kinda essential, but don't come by default </p>
+        <div class="codeBlock">
+            emerge --ask grub efibootmgr vim sudo git --jobs=2
+        </div>
+        <div class="teenyTinyText">
+            i normally also install sof-firmware and fish at this point, but those are just personal choices
+        </div>
+        <p> create a user account</p>
+        <div class="codeBlock">
+            useradd -m -G users,wheel,audio,video,usb,portage -s /bin/bash {USERNAME}
+        </div>
+        <p> set the user account password with passwd {USERNAME}</p>
+        <p> run visudo and then uncomment the '%wheel all:all all' line</p>
+        <p> congrats, you're almost done. </p>
+    </div>
+
+    <div class="contentbox">
+        <h4> bootloader config </h4>
+        <p> this parts simple*</p>
+        <div class="teenyTinyText">
+            assuming you didn't mess up any of the previous steps
+        </div>
+        <p> you just have to install and configure grub with 2 lines </p>
+        <div class="codeBlock">
+            grub-install /dev/sdX <br>
+            grub-mkconfig -o /boot/grub/grub.cfg <br>
+        </div>
+        <div class="teenyTinyText">
+            make sure to set /dev/sdX to your correct drive!!!
+        </div>
+    </div>
 
     <br>
 
